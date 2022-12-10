@@ -15,9 +15,14 @@ class CreateLinksTable extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_redirect');
+            $table->unsignedBigInteger('redirect_id');
+            $table->foreign('redirect_id')
+                ->references('id')
+                ->on('redirects')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
             $table->string('link');
-            $table->integer('click');
+            $table->integer('click')->nullable();
             $table->integer('max_click');
             $table->timestamps();
         });

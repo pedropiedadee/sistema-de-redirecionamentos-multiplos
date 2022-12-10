@@ -34,6 +34,35 @@
           <p class="link-click">👉 2/{{ redirect.total_max_click }}</p>
         </div>
       </div>
+      <div id="link-infos">
+        <div>
+          <div class="title-and-date">
+            <p class="main-text">{{ redirect.nome_link }}</p>
+            <p class="date">Criado em: {{ getDate(redirect.created_at) }} às {{ getHour(redirect.created_at) }}</p>
+          </div>
+          <div class="others">
+            <a target="_blank" href="youtube.com" class="link">{{ redirect.link_hash }}</a>
+            <div class="buttons">
+              <button class="btn-copy">Copiar</button>
+              <button class="btn-edit">Editar</button>
+            </div>
+          </div>
+        </div>
+        <div
+         class="card-link"
+         >
+          <div class="card-link-infos">
+            <div class="id-and-link">
+              <p class="id-link">01</p>
+              <div class="url-e-contagem">
+                <p class="url">https://www.notion.so/Green-club-8d477635100044e4b3c5ca81c479fbdc</p>
+                <p class="contagem">02/250</p>
+              </div>
+            </div>
+            <button class="btn-edit">Editar</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -42,7 +71,7 @@
 import moment from 'moment'
 
 export default {
-  name: 'Redirects',
+  name: 'Links',
 
   data() {
     return {
@@ -50,28 +79,42 @@ export default {
         get_redirects: false
       },
       redirects: [],
+      redirect: {},
     };
   },
 
   created() {
     this.getTodos();
+    this.getTodo();
   },
 
   methods: {
     getTodos() {
       this.spinner.get_redirects = true;
       this.$axios.get('/redirects').then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         this.redirects = response.data;
       }).finally(() => {
         this.spinner.get_redirects = false;
       });
     },
-
     getDate: function (date) {
       return moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+    },
+    getHour: function (date) {
+      return moment(date, 'h:mm').format('h:mm');
+    },
+    getTodo() {
+      this.spinner.get_redirects = true;
+      this.$axios.get(`/redirect/${this.$route.params.id}`).then((response) => {
+        console.log(response.data.data)
+        this.redirect = response.data.data;
+      }).finally(() => {
+        this.spinner.get_redirects = false;
+      })
     }
   },
+  
 
 
 };
