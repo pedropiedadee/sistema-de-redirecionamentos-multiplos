@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Redirect extends Model
 {
     protected $fillable = [
-        'nome_link', 'link_hash', 'total_max_click',
+        'nome_link', 'link_hash','link_default', 'total_max_click',
     ];
 
     public function links(): HasMany

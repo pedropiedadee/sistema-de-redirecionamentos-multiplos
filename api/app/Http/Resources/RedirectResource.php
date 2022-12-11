@@ -18,6 +18,7 @@ class RedirectResource extends JsonResource
             'id'         => (integer)$this->id,
             'nome_link'      => (string)$this->nome_link,
             'link_hash' => (string)$this->link_hash,
+            'link_default' => (string)$this->link_default,
             'total_max_click' => (integer)$this->total_max_click,
             'created_at'    => (string)$this->created_at,
             'links'  => LinkResource::collection($this->whenLoaded('links')),

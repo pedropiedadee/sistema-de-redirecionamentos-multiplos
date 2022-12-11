@@ -17,6 +17,7 @@ class CreateRedirectsTable extends Migration
             $table->id();
             $table->string('nome_link');
             $table->string('link_hash');
+            $table->string('link_default');
             $table->integer('total_max_click');
             $table->timestamps();
         });

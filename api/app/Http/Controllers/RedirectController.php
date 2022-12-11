@@ -22,14 +22,15 @@ class RedirectController extends Controller
         $data = $request->validate([
             'nome_link' => 'string|required',
             'total_max_click' => 'required',
-            'link_hash' => 'required'
+            'link_hash' => 'required',
+            'link_default' => 'string|required'
         ]);
 
         $redirect = Redirect::create($data);
 
 
         return response()->json([
-            'message' => 'Redirect Criado'
+            $redirect
         ], 201);
         
     }
