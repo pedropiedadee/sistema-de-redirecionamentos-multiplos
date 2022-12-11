@@ -129,15 +129,19 @@
             </div>
           </div>
         </div>
-        <div class="card-link">
+        <div 
+          v-for="link in redirect.links"
+          :key="link.id"
+          class="card-link"
+        >
           <div class="card-link-infos">
             <div class="id-and-link">
-              <p class="id-link">01</p>
+              <p class="id-link">{{ link.id }}</p>
               <div class="url-e-contagem">
                 <p class="url">
-                  https://www.notion.so/Green-club-8d477635100044e4b3c5ca81c479fbdc
+                  {{ link.link }}
                 </p>
-                <p class="contagem">02/250</p>
+                <p class="contagem"></p>
               </div>
             </div>
             <button class="btn-edit">Editar</button>
@@ -199,8 +203,9 @@ export default {
         this.link_default = "";
         this.newRedirect = "";
       });
+
     },
-    getTodos() {
+    getRedirects() {
       this.spinner.get_redirects = true;
 
       this.$axios
@@ -212,10 +217,11 @@ export default {
           this.spinner.get_redirects = false;
         });
     },
+
     getDate: function (date) {
       return moment(date, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY [às] HH:mm");
     },
-    getTodo() {
+    getLink() {
       this.spinner.get_redirects = true;
       this.$axios
         .get(`/redirect/${this.$route.params.id}`)
@@ -247,8 +253,8 @@ export default {
   },
 
   created() {
-    this.getTodos();
-    this.getTodo();
+    this.getRedirects();
+    this.getLink();
   },
 };
 </script>
