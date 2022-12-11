@@ -2,81 +2,78 @@
   <div id="all">
     <div id="save-modal" class="opacity modal-aberto">
       <div id="modal">
-          <div id="modal-header">
-            <p id="modal-title">Criação de Link</p>
-            <span @click.stop.prevent="CountInput = 1"><b-icon-x-lg @click="modalSave" class="x-icon m-4 fs-4" /></span>
-          </div>
-          <form
-            @submit.stop.prevent="addLink"
-          >
-            <div class="container">
-              <div id="link-title">
-                <label id="title">Titulo Do Link</label>
-                <input
-                  v-model="newRedirect"
-                  class="input-title-link"
-                  type="text"
-                  placeholder="Digite o titulo do seu link"
-                >
-              </div>
-              <div id="infos">
-                <p class="title-infos">URL original</p>
-                <p class="info-message">Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
-              </div>
-              <div
-                v-for="key in CountInput" :key="key" 
-                class="inputs"
-              >
-                <div class="id-and-input">
-                  <label class="id-input">{{ key }}</label>
-                  <input 
-                    v-model="links[key]"
-                    :id="key"
-                    type="text" 
-                    class="input-link" 
-                    placeholder="Ex: https://greenn.com.br/">
-                </div>
-                <input
-                  v-model="qnt_cliques[key]"
-                  :id="key"
-                  type="text" 
-                  class="qnt-cliques" 
-                  placeholder="qnt-cliques"
-                >
-              </div>
-              <div class="modal-buttons">
-                <button 
-                  @click="CountInput++"
-                  type="button"
-                  class="add-url"
-                 >
-                 <span style="margin-right: 10px;"><b-icon-plus-lg/></span>
-                   Adicionar mais URL
-                </button>
-                <button
-                  @click="CountInput--"
-                  type="button"
-                  class="remove-url"
-                 >
-                 <span style="margin-right: 10px;"><b-icon-dash-lg/></span>
-                   Remover URL
-                </button>
-              </div>
-              <div class="mt-3">            
-                <p class="title-infos mt-4">URL Default</p>
-                <p class="info-message">Essa URL será associada ao redirecionamento apenas quando todas as outras chegarem ao limite de cliques. Ela será a uma url fixa sem limitação.</p>
-              </div>
-              <input 
-                v-model="link_default"
-                type="text" 
+        <div id="modal-header">
+          <p id="modal-title">Criação de Link</p>
+          <span @click.stop.prevent="CountInput = 1"
+            ><b-icon-x-lg @click="modalSave" class="x-icon m-4 fs-4"
+          /></span>
+        </div>
+        <form @submit.stop.prevent="addLink">
+          <div class="container">
+            <div id="link-title">
+              <label id="title">Titulo Do Link</label>
+              <input
+                v-model="newRedirect"
                 class="input-title-link"
-                placeholder="Insira a URL Default"
-              >
-              <div class="last">
-                <button class="btn-save" type="submit">Salvar Link 💪</button>
-              </div>
+                type="text"
+                placeholder="Digite o titulo do seu link"
+              />
             </div>
-          </form>
+            <div id="infos">
+              <p class="title-infos">URL original</p>
+              <p class="info-message">
+                Você poderá inserir uma ou várias URL's, faça como desejar.
+                Lembre-se de inserir a quantidade de cliques junto à URL.
+              </p>
+            </div>
+            <div v-for="key in CountInput" :key="key" class="inputs">
+              <div class="id-and-input">
+                <label class="id-input">{{ key }}</label>
+                <input
+                  v-model="links[key]"
+                  :id="key"
+                  type="text"
+                  class="input-link"
+                  placeholder="Ex: https://greenn.com.br/"
+                />
+              </div>
+              <input
+                v-model="qnt_cliques[key]"
+                :id="key"
+                type="text"
+                class="qnt-cliques"
+                placeholder="qnt-cliques"
+              />
+            </div>
+            <div class="modal-buttons">
+              <button @click="CountInput++" type="button" class="add-url">
+                <span style="margin-right: 10px"><b-icon-plus-lg /></span>
+                Adicionar mais URL
+              </button>
+              <button @click="CountInput--" type="button" class="remove-url">
+                <span style="margin-right: 10px"><b-icon-dash-lg /></span>
+                Remover URL
+              </button>
+            </div>
+            <div class="mt-3">
+              <p class="title-infos mt-4">URL Default</p>
+              <p class="info-message">
+                Essa URL será associada ao redirecionamento apenas quando todas
+                as outras chegarem ao limite de cliques. Ela será a uma url fixa
+                sem limitação.
+              </p>
+            </div>
+            <input
+              v-model="link_default"
+              type="text"
+              class="input-title-link"
+              placeholder="Insira a URL Default"
+            />
+            <div class="last">
+              <button class="btn-save" type="submit">Salvar Link 💪</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
     <div class="view-title">
@@ -86,8 +83,7 @@
       </div>
       <button @click="modalSave" id="create-link">Criar um Link</button>
     </div>
-    <div class="regua">
-    </div>
+    <div class="regua"></div>
     <div id="main">
       <div id="redirects-list">
         <div id="redirect-title">
@@ -101,13 +97,17 @@
             </div>
           </div>
         </div>
-        <div v-for="redirect in redirects" :key="redirect.id" class="card-redirect">
+        <div
+          v-for="redirect in redirects"
+          :key="redirect.id"
+          class="card-redirect"
+        >
           <div class="card-infos">
             <div class="informations">
-              <p class="title-redirect"> {{ redirect.nome_link }}</p>
+              <p class="title-redirect">{{ redirect.nome_link }}</p>
               <p class="date">{{ getDate(redirect.created_at) }}</p>
             </div>
-            <p class="link">{{ redirect.link_hash }}</p>
+            <p class="link">{{ redirect.link_default }}</p>
           </div>
           <p class="link-click">👉 2/{{ redirect.total_max_click }}</p>
         </div>
@@ -116,10 +116,13 @@
         <div>
           <div class="title-and-date">
             <p class="main-text">{{ redirect.nome_link }}</p>
-            <p class="date">Criado em: {{ getDate(redirect.created_at) }} às {{ getHour(redirect.created_at) }}</p>
+            <p class="date">
+              Criado em: {{ getDate(redirect.created_at) }}
+            </p>
           </div>
           <div class="others">
-            <a target="_blank" href="youtube.com" class="link">{{ redirect.link_hash }}</a>
+            <a target="_blank" href="youtube.com" class="link">
+              {{ redirect.link_default }}</a>
             <div class="buttons">
               <button class="btn-copy">Copiar</button>
               <button class="btn-edit">Editar</button>
@@ -131,7 +134,9 @@
             <div class="id-and-link">
               <p class="id-link">01</p>
               <div class="url-e-contagem">
-                <p class="url">https://www.notion.so/Green-club-8d477635100044e4b3c5ca81c479fbdc</p>
+                <p class="url">
+                  https://www.notion.so/Green-club-8d477635100044e4b3c5ca81c479fbdc
+                </p>
                 <p class="contagem">02/250</p>
               </div>
             </div>
@@ -144,110 +149,115 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
+moment.locale('br')
 
 export default {
-  name: 'Links',
+  name: "Links",
 
-  
   data() {
     return {
-      newRedirect: '',
+      newRedirect: "",
       links: [],
-      link_default: '',
+      link_default: "",
       qnt_cliques: [],
       spinner: {
-        get_redirects: false
+        get_redirects: false,
       },
       redirects: [],
       redirect: {},
       CountInput: 1,
     };
   },
-  
-  
+
   methods: {
- 
     addLink() {
-      if (!this.newRedirect) { return; }
+      if (!this.newRedirect) {
+        return;
+      }
 
       const payloadRedirect = {
         nome_link: this.newRedirect,
-        link_hash: 'teste',
+        link_hash: "teste",
         link_default: this.link_default,
-        total_max_click: 400
+        total_max_click: 400,
       };
-  
-      this.$axios.post('/redirect', payloadRedirect).then((response) => {
-        for (let i = 1; i < this.links.length; i++){
+
+      this.$axios.post("/redirect", payloadRedirect).then((response) => {
+        for (let i = 1; i < this.links.length; i++) {
           const payload = {
             link: this.links[i],
             max_click: this.qnt_cliques[i],
-            link_default: this.link_default
-          }
-          this.$axios.post(`/redirect/${response.data[0].id}/links`, payload).then(() => {
-          });
-        } 
+            link_default: this.link_default,
+          };
+
+          this.$axios.post(`/redirect/${response.data[0].id}/links`, payload)
+        }
+        this.redirects.unshift(response.data[0])
+        this.links = [];
+        this.qnt_cliques = [];
+        this.link_default = "";
+        this.newRedirect = "";
       });
     },
     getTodos() {
       this.spinner.get_redirects = true;
-      this.$axios.get('/redirects').then((response) => {
-        // console.log(response.data)
-        this.redirects = response.data;
-      }).finally(() => {
-        this.spinner.get_redirects = false;
-      });
+
+      this.$axios
+        .get("/redirects")
+        .then((response) => {
+          this.redirects = response.data;
+        })
+        .finally(() => {
+          this.spinner.get_redirects = false;
+        });
     },
     getDate: function (date) {
-      return moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
-    },
-    getHour: function (date) {
-      return moment(date, 'h:mm').format('h:mm');
+      return moment(date, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY [às] HH:mm");
     },
     getTodo() {
       this.spinner.get_redirects = true;
-      this.$axios.get(`/redirect/${this.$route.params.id}`).then((response) => {
-        console.log(response.data.data)
-        this.redirect = response.data.data;
-      }).finally(() => {
-        this.spinner.get_redirects = false;
-      })
+      this.$axios
+        .get(`/redirect/${this.$route.params.id}`)
+        .then((response) => {
+          this.redirect = response.data.data;
+        })
+        .finally(() => {
+          this.spinner.get_redirects = false;
+        });
     },
   },
-  
-  setup(){
+
+  setup() {
     const modalSave = () => {
       let modal = document.getElementById("save-modal");
       let hasClass = modal.classList.contains("opacity");
 
-      if(hasClass){
+      if (hasClass) {
         modal.classList.remove("opacity");
         modal.classList.remove("translate");
-      }else{
+      } else {
         modal.classList.add("opacity");
         modal.classList.add("translate");
       }
-    }
+    };
     return {
-      modalSave
-    }
+      modalSave,
+    };
   },
-  
+
   created() {
     this.getTodos();
     this.getTodo();
   },
-  
-
 };
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:wght@500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:wght@500;600&display=swap");
 
 * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 /* Titulo */
@@ -259,7 +269,7 @@ export default {
 }
 
 .main-text {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
@@ -272,7 +282,7 @@ export default {
 }
 
 #main-subtext {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -280,23 +290,22 @@ export default {
   display: flex;
   align-items: center;
   letter-spacing: 0.2px;
-  color: #81858E;
+  color: #81858e;
 }
 
 #create-link {
-  color: #2133D2;
-  background-color: #2133D21A;
+  color: #2133d2;
+  background-color: #2133d21a;
   padding: 10px 50px;
   border-radius: 5px;
-  transition: .5s;
+  transition: 0.5s;
   border: none;
 }
 
 #create-link:hover {
-  color: #FFF;
-  background-color: #2133D2;
+  color: #fff;
+  background-color: #2133d2;
 }
-
 
 .regua {
   height: 0px;
@@ -327,17 +336,17 @@ export default {
 }
 
 #links-number {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
   line-height: 17px;
   letter-spacing: 0.2px;
-  color: #2133D2;
+  color: #2133d2;
 }
 
 #clicks {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -373,10 +382,9 @@ export default {
   display: flex;
 }
 
-
 .title-redirect {
   margin-right: 15px;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -384,28 +392,28 @@ export default {
 }
 
 .date {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
-  color: #81858E;
+  color: #81858e;
 }
 
 .link {
   display: flex;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
-  color: #81858E;
+  color: #81858e;
 }
 
 .link-click {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #81858E;
+  color: #81858e;
 }
 
 /* Informações do link */
@@ -437,40 +445,40 @@ export default {
 }
 
 .btn-copy {
-  color: #2133D2;
-  background-color: #2133D21A;
+  color: #2133d2;
+  background-color: #2133d21a;
   padding: 5px 20px;
   border-radius: 5px;
-  transition: .5s;
+  transition: 0.5s;
   border: none;
 }
 
 .btn-copy:hover {
-  color: #FFF;
-  background-color: #2133D2;
+  color: #fff;
+  background-color: #2133d2;
 }
 
 .btn-edit {
   margin-left: 10px;
-  border: 1px solid #2133D2;
+  border: 1px solid #2133d2;
   background-color: transparent;
   padding: 4px 19px;
   border-radius: 5px;
-  color: #2133D2;
-  transition: .5s;
+  color: #2133d2;
+  transition: 0.5s;
 }
 
 .btn-edit:hover {
   float: right;
-  color: #FFF;
-  background-color: #2133D2;
+  color: #fff;
+  background-color: #2133d2;
 }
 
 .link {
   font-weight: 400;
   font-size: 13px;
   line-height: 16px;
-  color: #2133D2;
+  color: #2133d2;
   text-decoration: none;
 }
 
@@ -486,7 +494,7 @@ export default {
 }
 
 .id-link {
-  color: #2133D2;
+  color: #2133d2;
   margin-right: 10px;
 }
 
@@ -496,7 +504,7 @@ export default {
   font-size: 12px;
   line-height: 15px;
   margin-left: 20px;
-  color: #81858E;
+  color: #81858e;
 }
 
 .id-and-link {
@@ -508,7 +516,7 @@ export default {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
-  color: #2133D2;
+  color: #2133d2;
 }
 
 .url-e-contagem {
@@ -522,7 +530,7 @@ export default {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.24);
   position: fixed;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .modal-aberto {
@@ -534,30 +542,27 @@ export default {
   opacity: 0;
 }
 
-
-
 #modal {
   position: fixed;
   height: 101%;
   width: 49%;
-  background-color: #FFF;
+  background-color: #fff;
   overflow-y: scroll;
   overflow-x: none;
-  transition: .5s;
+  transition: 0.5s;
   transform: translate(700px, -0px);
 }
-
 
 #modal-header {
   display: flex;
   justify-content: space-between;
-  background-color: #191B28;
+  background-color: #191b28;
   height: 80px;
   color: white;
 }
 
 #modal-title {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -565,7 +570,7 @@ export default {
   display: flex;
   align-items: center;
   margin: 15px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .x-icon {
@@ -576,8 +581,6 @@ export default {
   margin: 22px;
   display: block;
 }
-
-
 
 #link-title {
   font-weight: 600;
@@ -597,7 +600,7 @@ export default {
   color: #333333;
 }
 
-.input-title-link{
+.input-title-link {
   display: flex;
   outline: none;
   border: none;
@@ -621,7 +624,7 @@ export default {
 }
 
 .title-infos {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
@@ -629,104 +632,103 @@ export default {
   display: flex;
   align-items: center;
   letter-spacing: 0.5px;
-  color: #2133D2;
+  color: #2133d2;
   margin-bottom: 3px;
 }
 
-  .info-message {
-    font-weight: 400;
-    font-size: 14px;
-    text-align: left;
-    align-items: center;
-    letter-spacing: 0.2px;
-    color: #81858E;
-  }
+.info-message {
+  font-weight: 400;
+  font-size: 14px;
+  text-align: left;
+  align-items: center;
+  letter-spacing: 0.2px;
+  color: #81858e;
+}
 
-  .id-and-input{
-    display: flex;
-  }
+.id-and-input {
+  display: flex;
+}
 
-  .inputs {
-    display: flex;
-    justify-content: space-between;
-  }
+.inputs {
+  display: flex;
+  justify-content: space-between;
+}
 
-  .id-input {
-    font-size: 16px;
-    margin: 5px 10px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    color: #000000;
-  }
+.id-input {
+  font-size: 16px;
+  margin: 5px 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  color: #000000;
+}
 
-  .qnt-cliques {
-    border: none;
-    outline: none;
-    width: 110px;
-  }
+.qnt-cliques {
+  border: none;
+  outline: none;
+  width: 110px;
+}
 
-  .add-url {
-    margin-right: 5px;
-    margin-top: 20px;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    color: #2133D2;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: 1px solid #2133D2;
-    background-color: transparent;
-    transition: .3s;
-  }
+.add-url {
+  margin-right: 5px;
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: #2133d2;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #2133d2;
+  background-color: transparent;
+  transition: 0.3s;
+}
 
-  
-  .add-url:hover {
-    color: white;
-    background-color: #2133D2;
-  }
-  
-  .remove-url{
-    margin-right: 5px;
-    margin-top: 20px;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    color: #ff0000;
-    padding: 10px 40px;
-    border-radius: 5px;
-    border: 1px solid #ff0000;
-    background-color: transparent;
-    transition: .3s;
-  }
+.add-url:hover {
+  color: white;
+  background-color: #2133d2;
+}
 
-  .remove-url:hover{
-    color: white;
-    background-color: red;
-  }
+.remove-url {
+  margin-right: 5px;
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: #ff0000;
+  padding: 10px 40px;
+  border-radius: 5px;
+  border: 1px solid #ff0000;
+  background-color: transparent;
+  transition: 0.3s;
+}
 
-  .last {
-    margin-top: 110px;
-    height: 100%;
-    display: flex;
-    text-align: center;
-    justify-content: center;
-  }
-  
-  .btn-save{
-    margin-left: 67%;
-    border-radius: 5px;
-    border: none;
-    padding: 10px 40px;
-    color: white;
-    background-color: #2133D2;
-    box-shadow: 0px 4px 10px rgba(33, 51, 210, 0.5);
-    transition: .5s;
-  }
+.remove-url:hover {
+  color: white;
+  background-color: red;
+}
 
-  .btn-save:hover{
-    transform: scale(1.03);
-  }
+.last {
+  margin-top: 110px;
+  height: 100%;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.btn-save {
+  margin-left: 67%;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 40px;
+  color: white;
+  background-color: #2133d2;
+  box-shadow: 0px 4px 10px rgba(33, 51, 210, 0.5);
+  transition: 0.5s;
+}
+
+.btn-save:hover {
+  transform: scale(1.03);
+}
 </style>
 
 
