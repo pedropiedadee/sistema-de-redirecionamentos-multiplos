@@ -8,16 +8,31 @@
             ><b-icon-x-lg @click="modalSave" class="x-icon m-4 fs-4"
           /></span>
         </div>
-        <form @submit.stop.prevent="addLink">
+
+        <ValidationObserver
+          ref="linkForm"
+          tag="form"
+          @submit.stop.prevent="addLink"
+        >
           <div class="container">
             <div id="link-title">
               <label id="title">Titulo Do Link</label>
-              <input
-                v-model="newRedirect"
-                class="input-title-link"
-                type="text"
-                placeholder="Digite o titulo do seu link"
-              />
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="required"
+                name="title"
+              >
+                <input
+                  v-model="newRedirect"
+                  class="input-title-link"
+                  type="text"
+                  placeholder="Digite o titulo do seu link"
+                />
+
+                <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
+                  Preencha o campo titulo.
+                </div>
+              </ValidationProvider>
             </div>
             <div id="infos">
               <p class="title-infos">URL original</p>
@@ -29,21 +44,39 @@
             <div v-for="key in CountInput" :key="key" class="inputs">
               <div class="id-and-input">
                 <label class="id-input">{{ key }}</label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required|url"
+                  name="link"
+                >
+                  <input
+                    v-model="links[key]"
+                    :id="key"
+                    type="text"
+                    class="input-link"
+                    placeholder="Ex: https://greenn.com.br/"
+                  />
+                  <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
+                    Adicione um link.
+                  </div>
+                </ValidationProvider>
+              </div>
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="numeric|required"
+                name="qnt_cliques"
+              >
                 <input
-                  v-model="links[key]"
+                  v-model="qnt_cliques[key]"
                   :id="key"
                   type="text"
-                  class="input-link"
-                  placeholder="Ex: https://greenn.com.br/"
+                  class="qnt-cliques"
+                  placeholder="qnt-cliques"
                 />
-              </div>
-              <input
-                v-model="qnt_cliques[key]"
-                :id="key"
-                type="text"
-                class="qnt-cliques"
-                placeholder="qnt-cliques"
-              />
+                <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
+                  Adicione a quantidade de cliques.
+                </div>
+              </ValidationProvider>
             </div>
             <div class="modal-buttons">
               <button @click="CountInput++" type="button" class="add-url">
@@ -63,17 +96,26 @@
                 sem limitação.
               </p>
             </div>
-            <input
-              v-model="link_default"
-              type="text"
-              class="input-title-link"
-              placeholder="Insira a URL Default"
-            />
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="required"
+              name="default"
+            >
+              <input
+                v-model="link_default"
+                type="text"
+                class="input-title-link"
+                placeholder="Insira a URL Default"
+              />
+              <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
+                Adicione um link default.
+              </div>
+            </ValidationProvider>
             <div class="last">
               <button class="btn-save" type="submit">Salvar Link 💪</button>
             </div>
           </div>
-        </form>
+        </ValidationObserver>
       </div>
     </div>
     <div class="view-title">
@@ -116,24 +158,23 @@
         <div>
           <div class="title-and-date">
             <p class="main-text">{{ redirect.nome_link }}</p>
-            <p class="date">
-              Criado em: {{ getDate(redirect.created_at) }}
-            </p>
+            <p class="date">Criado em: {{ getDate(redirect.created_at) }}</p>
           </div>
           <div class="others">
-            <a target="_blank" href="youtube.com" class="link">
-              {{ redirect.link_default }}</a>
+            <input
+              type="text"
+              class="link"
+              ref="copiar"
+              v-on:focus="$event.target.select()"
+              :value="redirect.link_default"
+            />
             <div class="buttons">
-              <button class="btn-copy">Copiar</button>
+              <button @click="copy" class="btn-copy">Copiar</button>
               <button class="btn-edit">Editar</button>
             </div>
           </div>
         </div>
-        <div 
-          v-for="link in redirect.links"
-          :key="link.id"
-          class="card-link"
-        >
+        <div v-for="link in redirect.links" :key="link.id" class="card-link">
           <div class="card-link-infos">
             <div class="id-and-link">
               <p class="id-link">{{ link.id }}</p>
@@ -141,7 +182,7 @@
                 <p class="url">
                   {{ link.link }}
                 </p>
-                <p class="contagem"></p>
+                <p class="contagem">02/{{ link.max_click }}</p>
               </div>
             </div>
             <button class="btn-edit">Editar</button>
@@ -153,14 +194,21 @@
 </template>
 
 <script>
+import { ValidationObserver, ValidationProvider } from "vee-validate";
 import moment from "moment";
-moment.locale('br')
+moment.locale("pt-br");
 
 export default {
   name: "Links",
 
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+
   data() {
     return {
+      textCopy: "",
       newRedirect: "",
       links: [],
       link_default: "",
@@ -175,8 +223,15 @@ export default {
   },
 
   methods: {
-    addLink() {
-      if (!this.newRedirect) {
+    copy() {
+      this.$refs.copiar.focus();
+      document.execCommand("copy");
+    },
+
+    async addLink() {
+      const validator = await this.$refs.linkForm.validate();
+
+      if (!validator) {
         return;
       }
 
@@ -195,15 +250,14 @@ export default {
             link_default: this.link_default,
           };
 
-          this.$axios.post(`/redirect/${response.data[0].id}/links`, payload)
+          this.$axios.post(`/redirect/${response.data[0].id}/links`, payload);
         }
-        this.redirects.unshift(response.data[0])
+        this.redirects.unshift(response.data[0]);
         this.links = [];
         this.qnt_cliques = [];
         this.link_default = "";
         this.newRedirect = "";
       });
-
     },
     getRedirects() {
       this.spinner.get_redirects = true;
@@ -219,7 +273,9 @@ export default {
     },
 
     getDate: function (date) {
-      return moment(date, "YYYY-MM-DD HH:mm").format("DD/MM/YYYY [às] HH:mm");
+      return moment(date, "YYYY-MM-DD HH:mm:ss ").format(
+        "DD/MM/YYYY [às] HH:mm"
+      );
     },
     getLink() {
       this.spinner.get_redirects = true;
@@ -411,6 +467,8 @@ export default {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
+  border: none;
+  outline: none;
   font-size: 13px;
   color: #81858e;
 }

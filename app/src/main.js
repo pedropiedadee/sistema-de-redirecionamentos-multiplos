@@ -4,6 +4,11 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import './plugins/axios'
+import VeeValidate from 'vee-validate'
+
+Vue.use(VeeValidate )
+
+
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
