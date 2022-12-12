@@ -76,9 +76,12 @@
         </ValidationObserver>
       </div>
     </div>
+    <div id="edit-modal">
+      
+    </div>
     <div class="view-title">
       <div>
-        <h1 class="main-text">Links De Redirecionamentos 🌐</h1>
+        <h1 class="main-text border-0">Links De Redirecionamentos 🌐</h1>
         <h3 id="main-subtext">Crie seus links de redirect em poucos passos</h3>
       </div>
       <button @click="modalSave" id="create-link">Criar um Link</button>
@@ -104,7 +107,7 @@
                 <p class="title-redirect">{{ redirect.nome_link }}</p>
                 <p class="date">{{ getDate(redirect.created_at) }}</p>
               </div>
-              <p class="link">{{ redirect.link_default }}</p>
+              <p class="link-card">{{ redirect.link_default }}</p>
             </div>
           </RouterLink>
           <p class="link-click d-flex">👉 2/{{ redirect.total_max_click }}</p>
@@ -113,15 +116,23 @@
       <div id="link-infos">
         <div>
           <div class="title-and-date">
-            <p class="main-text">{{ redirect.nome_link }}</p>
+            <input 
+             v-model="redirect.nome_link"
+             class="main-text"           
+            >
             <p class="date">Criado em: {{ getDate(redirect.created_at) }}</p>
           </div>
           <div class="others">
-            <input type="text" class="link" ref="copiar" v-on:focus="$event.target.select()"
-              :value="redirect.link_default" />
+            <input 
+              type="text"
+              class="link"
+              ref="copiar" 
+              v-model="redirect.link_default"
+              v-on:focus="$event.target.select()"
+            />
             <div class="buttons">
               <button @click="copy" class="btn-copy">Copiar</button>
-              <button class="btn-edit">Editar</button>
+              <button  @click="updateRedirect(redirect)" class="btn-edit">Salvar edição</button>
             </div>
           </div>
         </div>
@@ -136,7 +147,7 @@
                 <p class="contagem">02/{{ link.max_click }}</p>
               </div>
             </div>
-            <button class="btn-edit">Editar</button>
+            <button class="btn-edit">Salvar edição</button>
           </div>
         </div>
       </div>
@@ -174,6 +185,9 @@ export default {
   },
 
   methods: {
+
+    
+
     copy() {
       this.$refs.copiar.focus();
       document.execCommand("copy");
@@ -188,7 +202,7 @@ export default {
 
       const payloadRedirect = {
         nome_link: this.newRedirect,
-        link_hash: "teste",
+        link_hash: "#"+this.newRedirect,
         link_default: this.link_default,
         total_max_click: 400,
       };
@@ -239,6 +253,17 @@ export default {
           this.spinner.get_redirects = false;
         });
     },
+
+    updateRedirect(redirect) {
+      const payload = {
+        nome_link: redirect.nome_link,
+        link_hash: "#"+redirect.nome_link.split(' ').join('').toLowerCase(),
+        total_max_click: 450,
+        link_default: redirect.link_default
+      }
+
+      this.$axios.put(`redirect/${redirect.id}`, payload)
+    }
   },
 
   setup() {
@@ -295,11 +320,15 @@ export default {
 }
 
 .main-text {
+  border: 1px solid #33333360;
+  outline: none;
+  padding: 5px;
+  border-radius: 3px;
+  margin-bottom: 5px;
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
-  line-height: 22px;
   margin-right: 10px;
   display: flex;
   align-items: center;
@@ -432,7 +461,21 @@ export default {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
-  border: none;
+  border: 1px solid #33333360;
+  padding: 3px;
+  border-radius: 3px;
+  outline: none;
+  font-size: 13px;
+  color: #81858e!important;
+}
+
+.link-card {
+  display: flex;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  padding: 3px;
+  border-radius: 3px;
   outline: none;
   font-size: 13px;
   color: #81858e!important;
@@ -513,8 +556,16 @@ export default {
 
 /* Card Links */
 .card-link {
-  margin-top: 40px;
+  border-radius: 15px;
+ 
+  padding: 20px;
+  transition: .2s;
 }
+
+.card-link:hover {
+  box-shadow: 7px 7px 27px 0px rgba(0, 0, 0, 0.13);
+}
+
 
 .card-link-infos {
   display: flex;

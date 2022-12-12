@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LinkUpdateRequest;
+use App\Http\Resources\LinkResource;
 use App\Link;
 use Illuminate\Http\Request;
 
@@ -11,5 +13,15 @@ class LinkController extends Controller
     {
         $listLink = Link::all();
         return response()->json($listLink);
+    }
+
+    public function update(Link $link, LinkUpdateRequest $request)
+    {
+        $input = $request->validated();
+
+        $link->fill($input);
+        $link->save();
+
+        return new LinkResource($link);
     }
 }
