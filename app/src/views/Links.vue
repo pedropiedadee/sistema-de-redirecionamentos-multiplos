@@ -141,13 +141,15 @@
             <div class="id-and-link">
               <p class="id-link">{{ link.id }}</p>
               <div class="url-e-contagem">
-                <p class="url">
-                  {{ link.link }}
-                </p>
-                <p class="contagem">02/{{ link.max_click }}</p>
+                <input 
+                  v-model="link.link" 
+                  class="url"
+                >
+                  <label for="clicks" class="text-secondary ml-5">Cliques Máximos</label>
+                  <input name="clicks" v-model="link.max_click" class="contagem">
               </div>
             </div>
-            <button class="btn-edit">Salvar edição</button>
+            <button @click="updateLink(link)" class="btn-edit">Salvar edição</button>
           </div>
         </div>
       </div>
@@ -185,9 +187,6 @@ export default {
   },
 
   methods: {
-
-    
-
     copy() {
       this.$refs.copiar.focus();
       document.execCommand("copy");
@@ -263,6 +262,15 @@ export default {
       }
 
       this.$axios.put(`redirect/${redirect.id}`, payload)
+    },
+
+    updateLink(link) {
+      const payload = {
+        link: link.link,
+        max_click: link.max_click
+      }
+
+      this.$axios.put(`links/${link.id}`, payload)
     }
   },
 
@@ -538,6 +546,7 @@ export default {
   border-radius: 5px;
   color: #2133d2;
   transition: 0.5s;
+  white-space: nowrap;
 }
 
 .btn-edit:hover {
@@ -579,11 +588,17 @@ export default {
 }
 
 .url {
+  border: 1px solid #81858e71;
+  outline: none;
+  padding: 3px;
+  border-radius: 2px;
+  width: 100%;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 15px;
   margin-left: 20px;
+  margin-bottom: 5px;
   color: #81858e;
 }
 
@@ -593,14 +608,21 @@ export default {
 }
 
 .contagem {
-  font-weight: 400;
+  display: inline;
+  text-align: center;
+  width: 15%;
+  border: 1px solid #81858e71;
+  outline: none;
+  padding: 3px;
+  border-radius: 2px;
+  margin-left: 5px;
   font-size: 12px;
-  line-height: 15px;
   color: #2133d2;
 }
 
 .url-e-contagem {
   display: block;
+  width: 80%;
   flex-direction: row;
 }
 
