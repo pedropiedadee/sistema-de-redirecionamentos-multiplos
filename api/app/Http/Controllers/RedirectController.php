@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LinkStoreRequest;
+use App\Http\Requests\RedirectUpdateRequest;
 use App\Http\Resources\LinkResource;
 use App\Http\Resources\RedirectResource;
 use App\Redirect;
@@ -39,6 +40,15 @@ class RedirectController extends Controller
     {
         $redirect->load('links');
         return new RedirectResource($redirect);
+    }
+
+    public function update(Redirect $redirect, RedirectUpdateRequest $request){
+        $input = $request->validated();
+
+        $redirect->fill($input);
+        $redirect->save();
+
+        return new RedirectResource($redirect->fresh());
     }
 
     public function addLink(Redirect $redirect, LinkStoreRequest $request)

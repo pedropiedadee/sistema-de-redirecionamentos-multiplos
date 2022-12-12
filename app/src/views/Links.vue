@@ -4,30 +4,16 @@
       <div id="modal">
         <div id="modal-header">
           <p id="modal-title">Criação de Link</p>
-          <span @click.stop.prevent="CountInput = 1"
-            ><b-icon-x-lg @click="modalSave" class="x-icon m-4 fs-4"
-          /></span>
+          <span @click.stop.prevent="CountInput = 1"><b-icon-x-lg @click="modalSave" class="x-icon m-4 fs-4" /></span>
         </div>
 
-        <ValidationObserver
-          ref="linkForm"
-          tag="form"
-          @submit.stop.prevent="addLink"
-        >
+        <ValidationObserver ref="linkForm" tag="form" @submit.stop.prevent="addLink">
           <div class="container">
             <div id="link-title">
               <label id="title">Titulo Do Link</label>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="title"
-              >
-                <input
-                  v-model="newRedirect"
-                  class="input-title-link"
-                  type="text"
-                  placeholder="Digite o titulo do seu link"
-                />
+              <ValidationProvider v-slot="{ errors }" rules="required" name="title">
+                <input v-model="newRedirect" class="input-title-link" type="text"
+                  placeholder="Digite o titulo do seu link" />
 
                 <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
                   Preencha o campo titulo.
@@ -44,35 +30,16 @@
             <div v-for="key in CountInput" :key="key" class="inputs">
               <div class="id-and-input">
                 <label class="id-input">{{ key }}</label>
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  rules="required|url"
-                  name="link"
-                >
-                  <input
-                    v-model="links[key]"
-                    :id="key"
-                    type="text"
-                    class="input-link"
-                    placeholder="Ex: https://greenn.com.br/"
-                  />
+                <ValidationProvider v-slot="{ errors }" rules="required|url" name="link">
+                  <input v-model="links[key]" :id="key" type="text" class="input-link"
+                    placeholder="Ex: https://greenn.com.br/" />
                   <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
                     Adicione um link.
                   </div>
                 </ValidationProvider>
               </div>
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="numeric|required"
-                name="qnt_cliques"
-              >
-                <input
-                  v-model="qnt_cliques[key]"
-                  :id="key"
-                  type="text"
-                  class="qnt-cliques"
-                  placeholder="qnt-cliques"
-                />
+              <ValidationProvider v-slot="{ errors }" rules="numeric|required" name="qnt_cliques">
+                <input v-model="qnt_cliques[key]" :id="key" type="text" class="qnt-cliques" placeholder="qnt-cliques" />
                 <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
                   Adicione a quantidade de cliques.
                 </div>
@@ -96,17 +63,8 @@
                 sem limitação.
               </p>
             </div>
-            <ValidationProvider
-              v-slot="{ errors }"
-              rules="required"
-              name="default"
-            >
-              <input
-                v-model="link_default"
-                type="text"
-                class="input-title-link"
-                placeholder="Insira a URL Default"
-              />
+            <ValidationProvider v-slot="{ errors }" rules="required" name="default">
+              <input v-model="link_default" type="text" class="input-title-link" placeholder="Insira a URL Default" />
               <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
                 Adicione um link default.
               </div>
@@ -139,19 +97,17 @@
             </div>
           </div>
         </div>
-        <div
-          v-for="redirect in redirects"
-          :key="redirect.id"
-          class="card-redirect"
-        >
-          <div class="card-infos">
-            <div class="informations">
-              <p class="title-redirect">{{ redirect.nome_link }}</p>
-              <p class="date">{{ getDate(redirect.created_at) }}</p>
+        <div v-for="redirect in redirects" :key="redirect.id" class="card-redirect">
+          <RouterLink class="router" :to="{ path: `/redirect/${redirect.id}`}">
+            <div class="card-infos">
+              <div class="informations">
+                <p class="title-redirect">{{ redirect.nome_link }}</p>
+                <p class="date">{{ getDate(redirect.created_at) }}</p>
+              </div>
+              <p class="link">{{ redirect.link_default }}</p>
             </div>
-            <p class="link">{{ redirect.link_default }}</p>
-          </div>
-          <p class="link-click">👉 2/{{ redirect.total_max_click }}</p>
+          </RouterLink>
+          <p class="link-click d-flex">👉 2/{{ redirect.total_max_click }}</p>
         </div>
       </div>
       <div id="link-infos">
@@ -161,13 +117,8 @@
             <p class="date">Criado em: {{ getDate(redirect.created_at) }}</p>
           </div>
           <div class="others">
-            <input
-              type="text"
-              class="link"
-              ref="copiar"
-              v-on:focus="$event.target.select()"
-              :value="redirect.link_default"
-            />
+            <input type="text" class="link" ref="copiar" v-on:focus="$event.target.select()"
+              :value="redirect.link_default" />
             <div class="buttons">
               <button @click="copy" class="btn-copy">Copiar</button>
               <button class="btn-edit">Editar</button>
@@ -319,7 +270,20 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:wght@500;600&display=swap");
 
 * {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat", sans-serif!important;
+}
+
+
+
+.router {
+  text-decoration: none;
+  color: inherit;
+  width: 80%;
+}
+
+.router:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Titulo */
@@ -421,6 +385,7 @@ export default {
 /* card-redirects */
 .card-redirect {
   border-bottom: 0.5px solid #81858e25;
+  background-color: white;
   padding: 25px 20px 10px 0px;
   margin: 0 0 0 20px;
   display: flex;
@@ -446,7 +411,8 @@ export default {
 
 .title-redirect {
   margin-right: 15px;
-  font-family: "Montserrat";
+  font-family: "Montserrat"!important;
+  text-align: left;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -458,7 +424,6 @@ export default {
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
-  line-height: 15px;
   color: #81858e;
 }
 
@@ -470,7 +435,7 @@ export default {
   border: none;
   outline: none;
   font-size: 13px;
-  color: #81858e;
+  color: #81858e!important;
 }
 
 .link-click {
@@ -565,7 +530,7 @@ export default {
 .url {
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 15px;
   margin-left: 20px;
   color: #81858e;

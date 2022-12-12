@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view v-bind:key="$route.fullPath"></router-view>
   </div>
 </template>
 
