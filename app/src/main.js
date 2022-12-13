@@ -5,6 +5,12 @@ import router from './router'
 import store from './store'
 import './plugins/axios'
 import VeeValidate from 'vee-validate'
+import Toast from "vue-toastification";
+// Import the CSS or use your own!
+import "vue-toastification/dist/index.css";
+
+
+Vue.use(Toast);
 
 Vue.use(VeeValidate )
 
