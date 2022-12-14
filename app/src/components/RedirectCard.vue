@@ -4,7 +4,7 @@
     <div class="card-infos">
       <div class="informations">
         <p class="title-redirect">{{ redirect.nome_link }}</p>
-        <p class="date">{{ getDate(redirect.created_at) }}</p>
+        <p class="date">{{ getDateOnly(redirect.created_at) }}</p>
       </div>
       <p class="link-card">{{ redirect.link_default }}</p>
     </div>
@@ -33,10 +33,10 @@ export default {
   },
 
   methods: {
-    getDate: function (date) {
-      return moment(date, "YYYY-MM-DD HH:mm:ss ").format(
-        "DD/MM/YYYY [às] HH:mm"
-      );
+    getDateOnly: function (date) {
+      return moment(date, "YYYY-MM-DD").format(
+        "DD/MM/YYYY"
+      );      
     },
   },
 };

@@ -142,8 +142,8 @@
              </ValidationProvider>
             </div>
             <div class="mt-4 w-100">
-              <label for="cliques">Link default</label>
-              <ValidationProvider v-slot="{ errors }" rules="url|required" name="qnt_cliques">
+              <label for="link_default">Link default</label>
+              <ValidationProvider v-slot="{ errors }" rules="url|required" name="link_default">
                 <input class="form-control" name="cliques" type="text" v-model="redirect.link_default">
                 <div v-if="!!errors[0]" class="d-flex mt-1 text-danger">
                     Adicione um link default.
@@ -197,6 +197,7 @@ export default {
       CountInput: 1,
       modalShow: false,
       soma: 0,
+      somaEdicao: 0,
     };
   },
 
@@ -204,7 +205,6 @@ export default {
     copy() {
       this.$refs.copiar.focus();
       document.execCommand("copy");
-
       this.$toast.info("Link copiado para área de transferência!", {
         position: "bottom-center",
         timeout: 5000,
@@ -248,6 +248,7 @@ export default {
           };
           this.$axios.post(`/redirect/${response.data[0].id}/links`, payload);
         }
+        this.soma = 0;
         this.redirects.unshift(response.data[0]);
         this.links = [];
         this.qnt_cliques = [];
@@ -272,9 +273,7 @@ export default {
     getRedirects() {
       this.spinner.get_redirects = true;
 
-      this.$axios
-        .get("/redirects")
-        .then((response) => {
+      this.$axios.get("/redirects").then((response) => {
           this.redirects = response.data;
         })
         .finally(() => {
@@ -285,8 +284,9 @@ export default {
     getDate: function (date) {
       return moment(date, "YYYY-MM-DD HH:mm:ss ").format(
         "DD/MM/YYYY [às] HH:mm"
-      );
+      );      
     },
+
     getLink() {
       this.spinner.get_redirects = true;
       this.$axios
@@ -303,9 +303,10 @@ export default {
       const payload = {
         nome_link: redirect.nome_link,
         link_hash: "#"+redirect.nome_link.split(' ').join('').toLowerCase(),
-        total_max_click: 450,
+        total_max_click: redirect.total_max_click,
         link_default: redirect.link_default
       }
+
       this.$axios.put(`redirect/${redirect.id}`, payload).then(() => {
         this.modalShow = false;
       })

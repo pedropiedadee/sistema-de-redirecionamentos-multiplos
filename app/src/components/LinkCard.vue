@@ -40,8 +40,7 @@
               Salvar edição
             </button> 
           </ValidationObserver> 
-        </b-modal>
-        
+        </b-modal>        
       </div>
     </div>
   </div>
@@ -68,6 +67,9 @@ export default {
   data() {
     return {
       modalShow: false,
+      totalMaxClick: 0,
+      redirect: {},
+      somaEdit: 0,
     };
   },
 
@@ -75,9 +77,7 @@ export default {
     async updateLink(link) {
       const validator = await this.$refs.editForm.validate();
 
-      if (!validator) {
-        return;
-      }
+      if (!validator) { return; }
 
       const payload = {
         link: link.link,
@@ -85,22 +85,45 @@ export default {
       };
 
       this.$axios.put(`links/${link.id}`, payload).then(() => {
-        this.modalShow = false;
+      this.$axios
+        .get(`/redirect/${this.$route.params.id}`)
+        .then((response) => {
+          this.redirect = response.data.data;
+
+          console.log(this.redirect)
+
+          for(var i = 0; i < this.redirect.links.length; i++) {
+            this.somaEdit += this.redirect.links[i].max_click;
+          }
+
+          console.log(this.somaEdit);
+
+          const payload = {
+            nome_link: this.redirect.nome_link,
+            link_hash: "#"+this.redirect.nome_link.split(' ').join('').toLowerCase(),
+            total_max_click: this.somaEdit,
+            link_default: this.redirect.link_default
+          }
+
+          this.$axios.put(`redirect/${this.redirect.id}`, payload)
+        })
+        
+      });
+      this.modalShow = false;
         this.$toast.success("Edição realizada com sucesso!", {
-        position: "top-left",
-        timeout: 5000,
-        closeOnClick: true,
-        pauseOnFocusLoss: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: "button",
-        icon: true,
-        rtl: false
-      });
-      });
+          position: "top-left",
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: "button",
+          icon: true,
+          rtl: false
+        });
     },
   },
 };
